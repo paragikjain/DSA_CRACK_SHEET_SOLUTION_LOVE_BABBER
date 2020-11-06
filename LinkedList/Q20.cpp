@@ -1,126 +1,155 @@
-// C++ program to delete a given key from 
-// linked list. 
-#include <bits/stdc++.h> 
-using namespace std; 
+// { Driver Code Starts
+//Initial Template for C++
 
-/* structure for a node */
-class Node { 
-public: 
-	int data; 
-	Node* next; 
-}; 
+#include <bits/stdc++.h>
+using namespace std;
 
-/* Function to insert a node at the beginning of 
-a Circular linked list */
-void push(Node** head_ref, int data) 
-{ 
-	// Create a new node and make head as next 
-	// of it. 
-	Node* ptr1 = new Node(); 
-	ptr1->data = data; 
-	ptr1->next = *head_ref; 
+struct Node
+{
+    int data;
+    Node * next;
+    Node * prev;
+    Node (int x)
+    {
+        data=x;
+        next=NULL;
+        prev=NULL;
+    }
+        
+};
 
-	/* If linked list is not NULL then set the 
-	next of last node */
-	if (*head_ref != NULL) { 
-		// Find the node before head and update 
-		// next of it. 
-		Node* temp = *head_ref; 
-		while (temp->next != *head_ref) 
-			temp = temp->next; 
-		temp->next = ptr1; 
-	} 
-	else
-		ptr1->next = ptr1; /*For the first node */
+Node *newNode(int data)
+{
+    Node *temp=new Node(data);
+    
+    return temp;
+}
 
-	*head_ref = ptr1; 
-} 
 
-/* Function to print nodes in a given 
-circular linked list */
-void printList(Node* head) 
-{ 
-	Node* temp = head; 
-	if (head != NULL) { 
-		do { 
-			cout << temp->data << " "; 
-			temp = temp->next; 
-		} while (temp != head); 
-	} 
 
-	cout << endl; 
-} 
 
-/* Function to delete a given node from the list */
-void deleteNode(Node** head, int key) 
-{ 
-	
-	// If linked list is empty 
-	if (*head == NULL) 
-		return; 
-		
-	// If the list contains only a single node 
-	if((*head)->data==key && (*head)->next==*head) 
-	{ 
-		free(*head); 
-		*head=NULL; 
-		return; 
-	} 
-	
-	Node *last=*head,*d; 
-	
-	// If head is to be deleted 
-	if((*head)->data==key) { 
-		
-		// Find the last node of the list 
-		while(last->next!=*head) 
-			last=last->next; 
-			
-		// Point last node to the next of head i.e. 
-		// the second node of the list 
-		last->next=(*head)->next; 
-		free(*head); 
-		*head=last->next; 
-	} 
-	
-	// Either the node to be deleted is not found 
-	// or the end of list is not reached 
-	while(last->next!=*head&&last->next->data!=key) { 
-		last=last->next; 
-	} 
-	
-	// If node to be deleted was found 
-	if(last->next->data==key) { 
-		d=last->next; 
-		last->next=d->next; 
-		free(d); 
-	} 
-	else
-		cout<<"no such keyfound"; 
-	} 
+void displayList(Node *head)
+{
+    //Head to Tail
+    while(head->next)
+    {
+        cout<<head->data<<" ";
+        head=head->next;
+    }
+    cout<<head->data;
+    
+    
+    
+}
 
-/* Driver program to test above functions */
-int main() 
-{ 
-	/* Initialize lists as empty */
-	Node* head = NULL; 
 
-	/* Created linked list will be 2->5->7->8->10 */
-	push(&head, 2); 
-	push(&head, 5); 
-	push(&head, 7); 
-	push(&head, 8); 
-	push(&head, 10); 
+int getLength(Node * head)
+{
+    Node *temp=head;
+    
+    int count=0;
+    while(temp->next!=head)
+    {
+        count++;
+        temp=temp->next;
+    }
+    return count+1;
+}
 
-	cout << "List Before Deletion: "; 
-	printList(head); 
 
-	deleteNode(&head, 7); 
 
-	cout << "List After Deletion: "; 
-	printList(head); 
 
-	return 0; 
-} 
+bool verify(Node* head)
+{
+    int fl=0;
+    int bl=0;
+    
+    Node *temp=head;
+    
+    while(temp->next)
+    {
+        temp=temp->next;
+        fl++;
+    }
+    
+    while(temp->prev)
+    {
+        temp=temp->prev;
+        bl++;
+    }
+    
+    return fl==bl;
+}
 
-// This is code is contributed by rathbhupendra 
+
+ // } Driver Code Ends
+
+
+
+
+/*
+struct Node
+{
+    int data;
+    Node * next;
+    Node * prev;
+    Node (int x)
+    {
+        data=x;
+        next=NULL;
+        prev=NULL;
+    }
+        
+};
+*/
+Node* reverseDLL(Node * head)
+{
+    Node *curr=head,*next=NULL,*prev=NULL;
+    while(curr!=NULL){
+        next=curr->next;
+        curr->next=prev;
+        curr->prev=next;
+        prev=curr;
+        curr=next;
+    }
+    return prev;
+}
+
+
+// { Driver Code Starts.
+
+int main() {
+	int t;
+	cin>>t;
+	while(t--)
+	{
+	    int n;
+	    cin>>n;
+	    Node *head=NULL, *tail=NULL;
+        int x;
+	    cin>>x;
+	    head = newNode(x);
+	    tail = head;
+	    
+	    for(int i=0;i<n - 1;i++)
+	    {
+	        cin>>x;
+	        Node* temp=newNode(x);
+	        tail->next=temp;
+	        temp->prev= tail;
+	        tail = temp;
+	    }
+	    head=reverseDLL(head);
+	    
+	    
+	    if(verify(head))
+	    displayList(head);
+	    else
+	    cout<<"Your pointers are not correctly connected";
+ 
+	    cout<<endl;
+	}
+	return 0;
+}
+
+  // } Driver Code Ends

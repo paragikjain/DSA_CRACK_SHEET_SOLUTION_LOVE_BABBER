@@ -1,155 +1,79 @@
-// { Driver Code Starts
-//Initial Template for C++
+// C++ program to find a pair with given sum x. 
+#include<bits/stdc++.h> 
+using namespace std; 
 
-#include <bits/stdc++.h>
-using namespace std;
+// structure of node of doubly linked list 
+struct Node 
+{ 
+	int data; 
+	struct Node *next, *prev; 
+}; 
 
-struct Node
-{
-    int data;
-    Node * next;
-    Node * prev;
-    Node (int x)
-    {
-        data=x;
-        next=NULL;
-        prev=NULL;
+// Function to find pair whose sum equal to given value x. 
+void pairSum(struct Node *head, int x) 
+{ 
+	// Set two pointers, first to the beginning of DLL 
+	// and second to the end of DLL. 
+	struct Node *first = head; 
+	struct Node *second = head->next;; 
+	//while (second->next != NULL) 
+	//	second = second->next; 
+
+	// To track if we find a pair or not 
+	bool found = false; 
+
+	// The loop terminates when either of two pointers 
+	// become NULL, or they cross each other (second->next 
+	// == first), or they become same (first == second) 
+	while (first != NULL ) 
+	{ 
+    while (second != NULL){
+      if ((first->data + second->data) == x) 
+      { 
+        found = true; 
+        cout << "(" << first->data<< ", "<< second->data << ")" << endl; 
+      }
+      second=second->next;
     }
-        
-};
+    first=first->next;
+    second=first->next;
+  }
+	// if pair is not present 
+	if (found == false) 
+		cout << "No pair found"; 
+} 
 
-Node *newNode(int data)
-{
-    Node *temp=new Node(data);
-    
-    return temp;
-}
+// A utility function to insert a new node at the 
+// beginning of doubly linked list 
+void insert(struct Node **head, int data) 
+{ 
+	struct Node *temp = new Node; 
+	temp->data = data; 
+	temp->next = temp->prev = NULL; 
+	if (!(*head)) 
+		(*head) = temp; 
+	else
+	{ 
+		temp->next = *head; 
+		(*head)->prev = temp; 
+		(*head) = temp; 
+	} 
+} 
 
+// Driver program 
+int main() 
+{ 
+	struct Node *head = NULL; 
+	insert(&head, 9); 
+	insert(&head, 8); 
+	insert(&head, 6); 
+	insert(&head, 5); 
+	insert(&head, 4); 
+	insert(&head, 6); 
+	insert(&head, 1); 
+	int x = 7; 
 
+	pairSum(head, x); 
 
-
-void displayList(Node *head)
-{
-    //Head to Tail
-    while(head->next)
-    {
-        cout<<head->data<<" ";
-        head=head->next;
-    }
-    cout<<head->data;
-    
-    
-    
-}
-
-
-int getLength(Node * head)
-{
-    Node *temp=head;
-    
-    int count=0;
-    while(temp->next!=head)
-    {
-        count++;
-        temp=temp->next;
-    }
-    return count+1;
-}
-
-
-
-
-bool verify(Node* head)
-{
-    int fl=0;
-    int bl=0;
-    
-    Node *temp=head;
-    
-    while(temp->next)
-    {
-        temp=temp->next;
-        fl++;
-    }
-    
-    while(temp->prev)
-    {
-        temp=temp->prev;
-        bl++;
-    }
-    
-    return fl==bl;
-}
-
-
- // } Driver Code Ends
-
-
-
-
-/*
-struct Node
-{
-    int data;
-    Node * next;
-    Node * prev;
-    Node (int x)
-    {
-        data=x;
-        next=NULL;
-        prev=NULL;
-    }
-        
-};
-*/
-Node* reverseDLL(Node * head)
-{
-    Node *curr=head,*next=NULL,*prev=NULL;
-    while(curr!=NULL){
-        next=curr->next;
-        curr->next=prev;
-        curr->prev=next;
-        prev=curr;
-        curr=next;
-    }
-    return prev;
-}
-
-
-// { Driver Code Starts.
-
-int main() {
-	int t;
-	cin>>t;
-	while(t--)
-	{
-	    int n;
-	    cin>>n;
-	    Node *head=NULL, *tail=NULL;
-        int x;
-	    cin>>x;
-	    head = newNode(x);
-	    tail = head;
-	    
-	    for(int i=0;i<n - 1;i++)
-	    {
-	        cin>>x;
-	        Node* temp=newNode(x);
-	        tail->next=temp;
-	        temp->prev= tail;
-	        tail = temp;
-	    }
-	    head=reverseDLL(head);
-	    
-	    
-	    if(verify(head))
-	    displayList(head);
-	    else
-	    cout<<"Your pointers are not correctly connected";
- 
-	    cout<<endl;
-	}
-	return 0;
-}
-
-  // } Driver Code Ends
+	return 0; 
+} 

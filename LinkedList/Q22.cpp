@@ -1,79 +1,93 @@
-// C++ program to find a pair with given sum x. 
-#include<bits/stdc++.h> 
+// C++ implementation to count triplets in a sorted doubly linked list 
+// whose sum is equal to a given value 'x' 
+#include <bits/stdc++.h> 
+
 using namespace std; 
 
 // structure of node of doubly linked list 
-struct Node 
-{ 
+struct Node { 
 	int data; 
-	struct Node *next, *prev; 
+	struct Node* next, *prev; 
 }; 
 
-// Function to find pair whose sum equal to given value x. 
-void pairSum(struct Node *head, int x) 
+// function to count triplets in a sorted doubly linked list 
+// whose sum is equal to a given value 'x' 
+int countTriplets(struct Node* head, int x) 
 { 
-	// Set two pointers, first to the beginning of DLL 
-	// and second to the end of DLL. 
-	struct Node *first = head; 
-	struct Node *second = head->next;; 
-	//while (second->next != NULL) 
-	//	second = second->next; 
+	struct Node* ptr, *ptr1, *ptr2; 
+	int count = 0; 
 
-	// To track if we find a pair or not 
-	bool found = false; 
+	// unordered_map 'um' implemented as hash table 
+	unordered_map<int, int> um; 
 
-	// The loop terminates when either of two pointers 
-	// become NULL, or they cross each other (second->next 
-	// == first), or they become same (first == second) 
-	while (first != NULL ) 
-	{ 
-    while (second != NULL){
-      if ((first->data + second->data) == x) 
-      { 
-        found = true; 
-        cout << "(" << first->data<< ", "<< second->data << ")" << endl; 
-      }
-      second=second->next;
-    }
-    first=first->next;
-    second=first->next;
-  }
-	// if pair is not present 
-	if (found == false) 
-		cout << "No pair found"; 
+	// insert the <node data, node pointer> tuple in 'um' 
+	for (ptr = head; ptr != NULL; ptr = ptr->next) 
+		um[ptr->data]++; 
+
+	// generate all possible pairs 
+	for (ptr1 = head; ptr1 != NULL; ptr1 = ptr1->next) 
+		for (ptr2 = ptr1->next; ptr2 != NULL; ptr2 = ptr2->next) { 
+
+			// p_sum - sum of elements in the current pair 
+			int p_sum = ptr1->data + ptr2->data; 
+
+			// if 'x-p_sum' is present in 'um' and either of the two nodes 
+			// are not equal to the 'um[x-p_sum]' node 
+			//if (um.find(x - p_sum) != um.end() && um[x - p_sum] != ptr1 
+			//	&& um[x - p_sum] != ptr2) 
+
+				// increment count 
+				
+				if(ptr1->data==x-p_sum || ptr2->data ==x-p_sum )
+				  count=count+(um[x-p_sum]-1);
+				else
+				  count=count+um[x-p_sum];
+		} 
+		
+
+	// required count of triplets 
+	// division by 3 as each triplet is counted 3 times 
+	return (count / 3); 
 } 
 
 // A utility function to insert a new node at the 
 // beginning of doubly linked list 
-void insert(struct Node **head, int data) 
+void insert(struct Node** head, int data) 
 { 
-	struct Node *temp = new Node; 
+	// allocate node 
+	struct Node* temp = new Node(); 
+
+	// put in the data 
 	temp->data = data; 
 	temp->next = temp->prev = NULL; 
-	if (!(*head)) 
+
+	if ((*head) == NULL) 
 		(*head) = temp; 
-	else
-	{ 
+	else { 
 		temp->next = *head; 
 		(*head)->prev = temp; 
 		(*head) = temp; 
 	} 
 } 
 
-// Driver program 
+// Driver program to test above 
 int main() 
 { 
-	struct Node *head = NULL; 
-	insert(&head, 9); 
-	insert(&head, 8); 
-	insert(&head, 6); 
-	insert(&head, 5); 
-	insert(&head, 4); 
-	insert(&head, 6); 
-	insert(&head, 1); 
-	int x = 7; 
+	// start with an empty doubly linked list 
+	struct Node* head = NULL; 
 
-	pairSum(head, x); 
+    // insert values in sorted order 
+    insert(&head, 9); 
+    insert(&head, 8); 
+    insert(&head, 6); 
+    insert(&head, 5); 
+    insert(&head, 4); 
+    insert(&head, 2); 
+    insert(&head, 1); 
 
+	int x = 17; 
+
+	cout << "Count = "
+		<< countTriplets(head, x); 
 	return 0; 
 } 
