@@ -1,0 +1,1 @@
+https://javarevisited.blogspot.com/2010/10/why-string-is-immutable-or-final-in-java.html#axzz6dAAL6uY9
